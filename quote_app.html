@@ -121,20 +121,21 @@
 
         .card-id {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 0.7rem;
+            top: 40px;
+            left: 40px;
+            font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 2px;
+            opacity: 0.8;
         }
 
         .card-logo {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 40px;
+            right: 40px;
             font-weight: 900;
             letter-spacing: -1px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -199,21 +200,35 @@
         ];
 
         const App = () => {
+            const getKoreanDate = () => {
+                const now = new Date();
+                const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+                const kstOffset = 9 * 60 * 60000;
+                const kstDate = new Date(utc + kstOffset);
+
+                const yyyy = kstDate.getFullYear();
+                const mm = String(kstDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(kstDate.getDate()).padStart(2, '0');
+                return `${yyyy}.${mm}.${dd}`;
+            };
+
             const [quote, setQuote] = useState(quotes[Math.floor(Math.random() * quotes.length)]);
             const [fade, setFade] = useState(true);
+            const [today, setToday] = useState(getKoreanDate());
 
             const getRandomQuote = () => {
                 setFade(false);
                 setTimeout(() => {
                     const randomIndex = Math.floor(Math.random() * quotes.length);
                     setQuote(quotes[randomIndex]);
+                    setToday(getKoreanDate());
                     setFade(true);
                 }, 300);
             };
 
             return (
                 <div className="container" style={{ opacity: fade ? 1 : 0 }}>
-                    <div className="card-id">2026.03.02</div>
+                    <div className="card-id">{today}</div>
                     <div className="card-logo">오늘의 명언</div>
 
                     <div className="quote-box">
