@@ -54,7 +54,24 @@
         .apps-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 600px) {
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .app-card {
+                padding: 2rem;
+            }
         }
 
         .app-card {
@@ -127,18 +144,15 @@
 <body>
     <div class="container">
         <h1>EXECUTIVE PORTAL</h1>
-        <p class="subtitle">Premium Integrated Management Suite</p>
 
         <div class="apps-grid">
             <a href="checklist.html" class="app-card">
                 <div class="app-icon">📋</div>
                 <h2>제조본부장 지시사항</h2>
-                <p>Onyx & Gold Premium Checklist</p>
             </a>
             <a href="quote_app.html" class="app-card">
                 <div class="app-icon">✨</div>
                 <h2>명언 제조기</h2>
-                <p>Bold & Minimal Insight Generator</p>
             </a>
         </div>
     </div>
