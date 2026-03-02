@@ -6,14 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>제조본부 공유방</title>
 
-    <!-- KakaoTalk & Social Sharing (Open Graph) -->
+    <!-- KakaoTalk & Social Sharing (Open Graph) - Final Clean Link -->
     <meta property="og:title" content="제조본부 공유방">
     <meta property="og:description" content="생산·품질 혁신 및 제조본부 통합 포털">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://gipum704-ux.github.io/antigravity-test-app/v.html">
     <meta property="og:image" content="https://gipum704-ux.github.io/antigravity-test-app/v.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
-    <!-- Home Screen Icon -->
+    <!-- Home Screen Icon (PWA Standalone Mode) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="제조본부">
@@ -23,10 +27,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --onyx: #0a0f19;
-            --charcoal: #151a25;
+            --onyx: #0c0c0c;
+            --charcoal: #1a1a1a;
             --gold: #d4af37;
-            --gold-light: #f5e196;
+            --gold-light: #ffebaa;
             --text-main: #ffffff;
             --text-muted: #a0a0a0;
         }
@@ -85,7 +89,7 @@
 
         .app-card {
             background: var(--charcoal);
-            border: 1px solid rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(212, 175, 55, 0.2);
             padding: 2.5rem 1.5rem;
             border-radius: 12px;
             text-decoration: none;
@@ -102,28 +106,28 @@
         .app-card:hover {
             transform: translateY(-8px);
             border-color: var(--gold);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
 
         .app-icon {
             font-size: 3rem;
             margin-bottom: 1.5rem;
-            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
         }
 
         .app-card h2 {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 500;
             color: var(--text-main);
         }
 
         .footer {
             margin-top: 4rem;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             letter-spacing: 3px;
             color: var(--text-muted);
             text-transform: uppercase;
-            opacity: 0.5;
+            opacity: 0.6;
         }
     </style>
 </head>
