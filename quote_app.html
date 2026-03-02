@@ -58,13 +58,32 @@
         }
 
         .quote-text {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 900;
-            line-height: 1.2;
+            line-height: 1.3;
             word-break: keep-all;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-transform: uppercase;
             letter-spacing: -1px;
+        }
+
+        @media (max-width: 600px) {
+            #root {
+                padding: 20px;
+            }
+
+            .container {
+                padding: 40px 25px;
+            }
+
+            .quote-text {
+                font-size: 1.4rem;
+                line-height: 1.4;
+            }
+
+            .quote-ko {
+                font-size: 0.95rem;
+            }
         }
 
         .quote-author {
