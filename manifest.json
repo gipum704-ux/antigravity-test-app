@@ -2,7 +2,7 @@
   "name": "제조본부 공유방",
   "short_name": "제조본부",
   "description": "생산·품질 혁신 및 제조본부 통합 포털",
-  "start_url": "v.html",
+  "start_url": "v.html?v=20260303",
   "display": "standalone",
   "background_color": "#0a0f19",
   "theme_color": "#0a0f19",

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제조본부장 지시사항 - Manufacturing Head Checklist</title>
+    <!-- React & Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Google Fonts: Inter & Noto Sans KR -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+KR:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --onyx: #1a1a1a;
+            --charcoal: #2d2d2d;
+            --gold: #d4af37;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #333, #111);
+            color: var(--white);
+            font-family: 'Noto Sans KR', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1100px;
+            position: relative;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: left;
+            line-height: 1.2;
+        }
+
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .btn-history-open {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+
+            /* Responsive Table to Cards */
+            .table-wrapper {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                max-height: none;
+                overflow: visible;
+            }
+
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                background: var(--glass);
+                backdrop-filter: blur(20px);
+                border: 1px solid var(--glass-border);
+                border-radius: 20px;
+                margin-bottom: 15px;
+                padding: 15px;
+                position: relative;
+            }
+
+            td {
+                border: none !important;
+                padding: 5px 0 !important;
+                text-align: left !important;
+                background: transparent !important;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.95rem;
+            }
+
+            /* Task Content takes full width */
+            td.col-task {
+                display: block;
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin-bottom: 10px;
+                border-bottom: 1px solid var(--glass-border) !important;
+                padding-bottom: 10px !important;
+            }
+
+            /* Add Labels for Mobile */
+            td::before {
+                content: attr(data-label);
+                font-size: 0.8rem;
+                color: rgba(255, 255, 255, 0.4);
+                font-weight: 400;
+            }
+
+            td.col-task::before {
+                display: block;
+                margin-bottom: 4px;
+            }
+
+            /* Action button styling in card */
+            td:last-child {
+                margin-top: 10px;
+                border-top: 1px solid var(--glass-border) !important;
+                padding-top: 10px !important;
+                justify-content: flex-end;
+            }
+
+            .btn-complete {
+                width: 100%;
+                padding: 12px;
+            }
+
+            /* Input Row Styling for Mobile */
+            tr.input-row {
+                background: rgba(212, 175, 55, 0.1);
+                border-color: var(--gold);
+            }
+
+            .btn-add-cell {
+                justify-content: center;
+                border-radius: 12px;
+            }
+        }
+
+        .count-box {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+            background: transparent;
+            border: none;
+            padding: 0;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+        }
+
+        .btn-history-open {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--gold);
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-history-open:hover {
+            background: var(--gold);
+            color: var(--onyx);
+        }
+
+        /* Table Styles with Premium Theme */
+        .table-wrapper {
+            width: 100%;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            max-height: 550px;
+            overflow-y: auto;
+            position: relative;
+            padding: 10px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            text-align: center;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        th {
+            background: var(--charcoal);
+            padding: 15px 10px;
+            font-weight: 700;
+            color: var(--gold);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        th:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        th:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        td {
+            padding: 18px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        td:first-child {
+            border-left: 1px solid var(--glass-border);
+            border-radius: 16px 0 0 16px;
+        }
+
+        td:last-child {
+            border-right: 1px solid var(--glass-border);
+            border-radius: 0 16px 16px 0;
+        }
+
+        tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.07);
+            transform: scale(1.005);
+            border-color: var(--gold);
+        }
+
+        .col-date {
+            width: 110px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+        }
+
+        .col-task {
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .col-manager {
+            width: 100px;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .col-target {
+            width: 110px;
+            opacity: 0.8;
+        }
+
+        .col-overdue {
+            width: 90px;
+        }
+
+        /* Input Row */
+        .input-row td {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold);
+        }
+
+        input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 5px;
+            text-align: inherit;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        .btn-add-cell {
+            background: var(--gold) !important;
+            color: var(--onyx) !important;
+            font-weight: 900 !important;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-add-cell:hover {
+            background: #fff !important;
+            box-shadow: 0 0 15px var(--gold);
+        }
+
+        .btn-complete {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .btn-complete:hover {
+            background: var(--gold);
+            color: var(--onyx);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* History Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal {
+            background: var(--onyx);
+            border: 1px solid var(--gold);
+            padding: 50px;
+            border-radius: 32px;
+            width: 95%;
+            max-width: 1000px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            color: var(--gold);
+            font-size: 1.8rem;
+        }
+
+        .modal-count {
+            margin-left: auto;
+            background: transparent;
+            border: none;
+            padding: 0;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--glass);
+            padding: 15px 25px;
+            border-radius: 12px;
+        }
+
+        .filter-group input {
+            width: 140px;
+            border-bottom: 1px solid var(--gold);
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .btn-close {
+            color: var(--white);
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+            color: var(--gold);
+        }
+
+        .overdue-red {
+            color: #ff4757;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        .table-wrapper::-webkit-scrollbar,
+        .modal::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb,
+        .modal::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track,
+        .modal::-webkit-scrollbar-track {
+            background: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [tasks, setTasks] = useState([
+                { id: 1, date: '03-02', content: '라인 자동화 설비 도입 검토', manager: '설비팀', target: '03-15', overdue: 0 },
+                { id: 2, date: '02-28', content: '부품 리드타임 단축 방안 수립', manager: '구매팀', target: '03-10', overdue: 2 }
+            ]);
+
+            const [completedTasks, setCompletedTasks] = useState([
+                { id: 101, date: '01-10', content: '공장 바닥 보수 작업', manager: '총무팀', target: '01-20', overdue: 0, completedDate: '01-18' }
+            ]);
+
+            const [showHistory, setShowHistory] = useState(false);
+            const [startDate, setStartDate] = useState('01-01');
+            const [endDate, setEndDate] = useState('12-31');
+
+            const [newInput, setNewInput] = useState({
+                content: '',
+                manager: '',
+                target: ''
+            });
+
+            const addTask = () => {
+                const today = new Date();
+                const dateStr = today.toISOString().slice(5, 10).replace(/-/g, '-');
+                const newTask = {
+                    id: Date.now(),
+                    date: dateStr,
+                    content: newInput.content || '새로운 지시사항',
+                    manager: newInput.manager || '담당자',
+                    target: newInput.target || dateStr,
+                    overdue: 0
+                };
+                setTasks([...tasks, newTask]);
+                setNewInput({ content: '', manager: '', target: '' });
+            };
+
+            const completeTask = (id) => {
+                const taskToComplete = tasks.find(t => t.id === id);
+                const today = new Date().toISOString().slice(5, 10).replace(/-/g, '-');
+                setCompletedTasks([...completedTasks, { ...taskToComplete, completedDate: today }]);
+                setTasks(tasks.filter(t => t.id !== id));
+            };
+
+            const filteredHistory = completedTasks.filter(task => {
+                return task.completedDate >= startDate && task.completedDate <= endDate;
+            });
+
+            const padCount = (num) => num.toString().padStart(2, '0');
+
+            return (
+                <div className="app-container">
+                    <header>
+                        <h1>제조본부장 지시사항</h1>
+                        <div className="count-box">{padCount(tasks.length)} 건</div>
+                        <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 이력 조회</button>
+                    </header>
+
+                    <div className="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th className="col-date">지시일</th>
+                                    <th className="col-task">지시 사항</th>
+                                    <th className="col-manager">담당</th>
+                                    <th className="col-target">목표일</th>
+                                    <th className="col-overdue">초과일</th>
+                                    <th style={{ width: '90px' }}>진행</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="input-row">
+                                    <td className="col-date">자동입력</td>
+                                    <td className="col-task">
+                                        <input
+                                            placeholder="지시 사항 입력..."
+                                            value={newInput.content}
+                                            onChange={e => setNewInput({ ...newInput, content: e.target.value })}
+                                        />
+                                    </td>
+                                    <td className="col-manager">
+                                        <input
+                                            placeholder="담당 부서"
+                                            value={newInput.manager}
+                                            onChange={e => setNewInput({ ...newInput, manager: e.target.value })}
+                                        />
+                                    </td>
+                                    <td className="col-target">
+                                        <input
+                                            placeholder="00-00"
+                                            value={newInput.target}
+                                            onChange={e => setNewInput({ ...newInput, target: e.target.value })}
+                                        />
+                                    </td>
+                                    <td>-</td>
+                                    <td className="btn-add-cell">
+                                        <button
+                                            style={{ background: 'none', border: 'none', fontWeight: 900, cursor: 'pointer', width: '100%', color: 'inherit' }}
+                                            onClick={addTask}
+                                        >
+                                            추가
+                                        </button>
+                                    </td>
+                                </tr>
+                                {tasks.map(task => (
+                                    <tr key={task.id}>
+                                        <td className="col-date" data-label="지시일">{task.date}</td>
+                                        <td className="col-task" data-label="지시사항">{task.content}</td>
+                                        <td className="col-manager" data-label="담당">{task.manager}</td>
+                                        <td className="col-target" data-label="목표일">{task.target}</td>
+                                        <td className={task.overdue > 0 ? 'overdue-red' : ''} data-label="초과일">{task.overdue} 일</td>
+                                        <td><button className="btn-complete" onClick={() => completeTask(task.id)}>완료</button></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {showHistory && (
+                        <div className="overlay">
+                            <div className="modal">
+                                <div className="modal-header">
+                                    <h2>완료된 지시사항 이력</h2>
+                                    <button className="btn-close" onClick={() => setShowHistory(false)}>&times;</button>
+                                </div>
+
+                                <div className="filter-group">
+                                    <span>기간 조회: </span>
+                                    <input type="text" value={startDate} onChange={e => setStartDate(e.target.value)} placeholder="MM-DD" />
+                                    <span> ~ </span>
+                                    <input type="text" value={endDate} onChange={e => setEndDate(e.target.value)} placeholder="MM-DD" />
+                                    <div className="modal-count">{padCount(filteredHistory.length)} 건</div>
+                                </div>
+
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>지시일</th>
+                                            <th>지시 사항</th>
+                                            <th>담당</th>
+                                            <th>목표일</th>
+                                            <th>완료일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredHistory.map(task => (
+                                            <tr key={task.id}>
+                                                <td data-label="지시일">{task.date}</td>
+                                                <td className="col-task" data-label="지시사항" style={{ textAlign: 'center' }}>{task.content}</td>
+                                                <td style={{ color: 'var(--gold)' }} data-label="담당">{task.manager}</td>
+                                                <td data-label="목표일">{task.target}</td>
+                                                <td style={{ color: '#2b8a3e', fontWeight: 700 }} data-label="완료일">{task.completedDate}</td>
+                                            </tr>
+                                        ))}
+                                        {filteredHistory.length === 0 && (
+                                            <tr>
+                                                <td colSpan="5" style={{ padding: '40px', color: '#999' }}>해당 기간의 완료 이력이 없습니다.</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
