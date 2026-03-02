@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Portal | Premium Apps</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --onyx: #0f0f0f;
+            --charcoal: #1a1a1a;
+            --gold: #d4af37;
+            --gold-hover: #f1c40f;
+            --text-gray: #a0a0a0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, var(--charcoal) 0%, var(--onyx) 100%);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .app-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .app-card:hover::before {
+            left: 100%;
+        }
+
+        .app-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--gold);
+        }
+
+        .app-card h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .app-card p {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 2rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>EXECUTIVE PORTAL</h1>
+        <p class="subtitle">Premium Integrated Management Suite</p>
+
+        <div class="apps-grid">
+            <a href="checklist.html" class="app-card">
+                <div class="app-icon">📋</div>
+                <h2>제조본부장 지시사항</h2>
+                <p>Onyx & Gold Premium Checklist</p>
+            </a>
+            <a href="quote_app.html" class="app-card">
+                <div class="app-icon">✨</div>
+                <h2>명언 제조기</h2>
+                <p>Bold & Minimal Insight Generator</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        Designed for Excellence
+    </div>
+</body>
+
+</html>
