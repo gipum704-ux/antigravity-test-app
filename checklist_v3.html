@@ -693,12 +693,18 @@
 
             // Admin Logic
             const [user, setUser] = useState(null);
-            const isAdmin = user?.email === 'gipum704@gmail.com' || new URLSearchParams(window.location.search).get('debug') === 'admin';
+            const isAdmin = user?.email === 'gipum704@gmail.com' ||
+                new URLSearchParams(window.location.search).get('debug') === 'admin' ||
+                localStorage.getItem('executive_admin') === 'true';
+
             const showAdminButton = new URLSearchParams(window.location.search).get('admin') === '1';
 
             const handleLogin = (response) => {
                 const payload = JSON.parse(atob(response.credential.split('.')[1]));
                 setUser(payload);
+                if (payload.email === 'gipum704@gmail.com') {
+                    localStorage.setItem('executive_admin', 'true');
+                }
                 console.log("Logged in as:", payload.email);
             };
 
@@ -780,7 +786,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v4.0</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v4.1</span></h1>
                         <div className="header-buttons" style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
                             <button className="btn-history-open" onClick={() => setShowHistory(true)} style={{ position: 'static', transform: 'none', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: 'var(--gold)', padding: '10px 20px', borderRadius: '8px' }}>완료 조회</button>
                             {showAdminButton && !isAdmin && (
