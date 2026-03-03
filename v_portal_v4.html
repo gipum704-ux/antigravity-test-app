@@ -183,7 +183,7 @@
                         });
                         console.log("GSI Initialized");
                     } else {
-                        setTimeout(initGSI, 100);
+                        setTimeout(initGSI, 500);
                     }
                 };
                 initGSI();
@@ -191,14 +191,29 @@
 
             const triggerLogin = () => {
                 if (window.google) {
-                    // Defensive re-init if needed
                     google.accounts.id.initialize({
                         client_id: '108149202052-ndm688863f6r0dcp47p2f4q33306r8f5.apps.googleusercontent.com',
                         callback: handleLogin
                     });
-                    google.accounts.id.prompt();
+                    google.accounts.id.prompt((notification) => {
+                        console.log("GIS Result:", notification);
+                        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                            // If One Tap fails, show password fallback
+                            const pwd = prompt("구글 로그인 보안 정책으로 인해 차단되었습니다.\n비상 패스워드를 입력해주세요:");
+                            if (pwd === 'gipum704') {
+                                setIsAdmin(true);
+                                localStorage.setItem('executive_admin', 'true');
+                                alert('관리자 인증되었습니다 (비상 모드)');
+                            }
+                        }
+                    });
                 } else {
-                    alert('구글 서비스 로딩 중입니다. 잠시 후 다시 시도해주세요.');
+                    const pwd = prompt("구글 서비스 연결 불가.\n비상 패스워드를 입력해주세요:");
+                    if (pwd === 'gipum704') {
+                        setIsAdmin(true);
+                        localStorage.setItem('executive_admin', 'true');
+                        alert('관리자 인증되었습니다 (오프라인 모드)');
+                    }
                 }
             };
 
@@ -219,7 +234,7 @@
                     {showAdminButton && (
                         <div className="admin-section">
                             {isAdmin ? (
-                                <div className="admin-status">관리자 인증됨 (v4.1)</div>
+                                <div className="admin-status">관리자 인증됨 (v4.2)</div>
                             ) : (
                                 <button className="btn-admin-login" onClick={triggerLogin}>관리자 로그인</button>
                             )}
