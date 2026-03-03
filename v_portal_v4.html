@@ -175,16 +175,31 @@
             };
 
             useEffect(() => {
+                const initGSI = () => {
+                    if (window.google) {
+                        google.accounts.id.initialize({
+                            client_id: '108149202052-ndm688863f6r0dcp47p2f4q33306r8f5.apps.googleusercontent.com',
+                            callback: handleLogin
+                        });
+                        console.log("GSI Initialized");
+                    } else {
+                        setTimeout(initGSI, 100);
+                    }
+                };
+                initGSI();
+            }, []);
+
+            const triggerLogin = () => {
                 if (window.google) {
+                    // Defensive re-init if needed
                     google.accounts.id.initialize({
                         client_id: '108149202052-ndm688863f6r0dcp47p2f4q33306r8f5.apps.googleusercontent.com',
                         callback: handleLogin
                     });
+                    google.accounts.id.prompt();
+                } else {
+                    alert('구글 서비스 로딩 중입니다. 잠시 후 다시 시도해주세요.');
                 }
-            }, []);
-
-            const triggerLogin = () => {
-                google.accounts.id.prompt();
             };
 
             return (
