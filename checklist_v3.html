@@ -497,6 +497,8 @@
                 justify-content: space-between;
                 align-items: center;
                 font-size: 1rem;
+                white-space: nowrap;
+                /* Prevent date wrapping */
             }
 
             td.col-task {
@@ -667,7 +669,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.4</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.5</span></h1>
                         <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
 
