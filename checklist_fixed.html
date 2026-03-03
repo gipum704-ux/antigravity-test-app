@@ -43,9 +43,10 @@
 
         .app-container {
             width: 100%;
-            max-width: 1100px;
+            max-width: 800px;
             position: relative;
         }
+
 
         header {
             display: flex;
@@ -56,7 +57,7 @@
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: 2.22rem;
             font-weight: 900;
             letter-spacing: -1px;
             background: linear-gradient(to right, #fff, var(--gold));
@@ -64,7 +65,9 @@
             -webkit-text-fill-color: transparent;
             text-align: left;
             line-height: 1.2;
+            margin-right: auto;
         }
+
 
         @media screen and (max-width: 768px) {
             h1 {
@@ -153,10 +156,21 @@
                 justify-content: flex-end;
             }
 
-            .btn-complete {
-                width: 100%;
+            .btn-complete,
+            .btn-delete {
+                flex: 1;
                 padding: 12px;
             }
+
+            .btn-delete {
+                margin-right: 10px;
+                background: rgba(255, 71, 87, 0.1);
+                border: 1px solid #ff4757;
+                color: #ff4757;
+                border-radius: 8px;
+                font-weight: 700;
+            }
+
 
             /* Input Row Styling for Mobile */
             tr.input-row {
@@ -171,16 +185,16 @@
         }
 
         .count-box {
-            position: absolute;
-            right: 0;
-            top: calc(100% + 10px);
             background: transparent;
             border: none;
             padding: 0;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.4);
             font-size: 0.9rem;
+            text-align: right;
+            margin-bottom: 5px;
         }
+
 
         .btn-history-open {
             position: absolute;
@@ -357,6 +371,26 @@
             box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
         }
 
+        .btn-delete {
+            background: transparent;
+            border: 1px solid #ff4757;
+            color: #ff4757;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-right: 8px;
+        }
+
+        .btn-delete:hover {
+            background: #ff4757;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+        }
+
+
         /* History Overlay */
         .overlay {
             position: fixed;
@@ -474,17 +508,20 @@
 
         const App = () => {
             const [tasks, setTasks] = useState([
-                { id: 1, date: '03-02', content: '라인 자동화 설비 도입 검토', manager: '설비팀', target: '03-15', overdue: 0 },
-                { id: 2, date: '02-28', content: '부품 리드타임 단축 방안 수립', manager: '구매팀', target: '03-10', overdue: 2 }
+                { id: 1, date: '26-03-02', content: '라인 자동화 설비 도입 검토', manager: '설비팀', target: '26-03-15', overdue: 0 },
+                { id: 2, date: '26-02-28', content: '부품 리드타임 단축 방안 수립', manager: '구매팀', target: '26-03-10', overdue: 2 }
             ]);
+
 
             const [completedTasks, setCompletedTasks] = useState([
-                { id: 101, date: '01-10', content: '공장 바닥 보수 작업', manager: '총무팀', target: '01-20', overdue: 0, completedDate: '01-18' }
+                { id: 101, date: '26-01-10', content: '공장 바닥 보수 작업', manager: '총무팀', target: '26-01-20', overdue: 0, completedDate: '26-01-18' }
             ]);
 
+
             const [showHistory, setShowHistory] = useState(false);
-            const [startDate, setStartDate] = useState('01-01');
-            const [endDate, setEndDate] = useState('12-31');
+            const [startDate, setStartDate] = useState('26-01-01');
+            const [endDate, setEndDate] = useState('26-12-31');
+
 
             const [newInput, setNewInput] = useState({
                 content: '',
@@ -494,7 +531,8 @@
 
             const addTask = () => {
                 const today = new Date();
-                const dateStr = today.toISOString().slice(5, 10).replace(/-/g, '-');
+                const dateStr = today.toISOString().slice(2, 10).replace(/-/g, '-');
+
                 const newTask = {
                     id: Date.now(),
                     date: dateStr,
@@ -509,10 +547,17 @@
 
             const completeTask = (id) => {
                 const taskToComplete = tasks.find(t => t.id === id);
-                const today = new Date().toISOString().slice(5, 10).replace(/-/g, '-');
+                const today = new Date().toISOString().slice(2, 10).replace(/-/g, '-');
                 setCompletedTasks([...completedTasks, { ...taskToComplete, completedDate: today }]);
                 setTasks(tasks.filter(t => t.id !== id));
             };
+
+            const deleteTask = (id) => {
+                if (confirm('정말 삭제하시겠습니까?')) {
+                    setTasks(tasks.filter(t => t.id !== id));
+                }
+            };
+
 
             const filteredHistory = completedTasks.filter(task => {
                 return task.completedDate >= startDate && task.completedDate <= endDate;
@@ -524,9 +569,11 @@
                 <div className="app-container">
                     <header>
                         <h1>제조본부장 지시사항</h1>
-                        <div className="count-box">{padCount(tasks.length)} 건</div>
-                        <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 이력 조회</button>
+                        <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
+
+                    <div className="count-box">{padCount(tasks.length)} 건</div>
+
 
                     <div className="table-wrapper">
                         <table>
@@ -537,7 +584,8 @@
                                     <th className="col-manager">담당</th>
                                     <th className="col-target">목표일</th>
                                     <th className="col-overdue">초과일</th>
-                                    <th style={{ width: '90px' }}>진행</th>
+                                    <th style={{ width: '150px' }}>진행</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -559,10 +607,11 @@
                                     </td>
                                     <td className="col-target">
                                         <input
-                                            placeholder="00-00"
+                                            placeholder="26-00-00"
                                             value={newInput.target}
                                             onChange={e => setNewInput({ ...newInput, target: e.target.value })}
                                         />
+
                                     </td>
                                     <td>-</td>
                                     <td className="btn-add-cell">
@@ -581,9 +630,13 @@
                                         <td className="col-manager" data-label="담당">{task.manager}</td>
                                         <td className="col-target" data-label="목표일">{task.target}</td>
                                         <td className={task.overdue > 0 ? 'overdue-red' : ''} data-label="초과일">{task.overdue} 일</td>
-                                        <td><button className="btn-complete" onClick={() => completeTask(task.id)}>완료</button></td>
+                                        <td>
+                                            <button className="btn-delete" onClick={() => deleteTask(task.id)}>삭제</button>
+                                            <button className="btn-complete" onClick={() => completeTask(task.id)}>완료</button>
+                                        </td>
                                     </tr>
                                 ))}
+
                             </tbody>
                         </table>
                     </div>
