@@ -590,6 +590,44 @@
                 padding-right: 25px !important;
                 /* For the arrow space */
             }
+
+            .col-actions::before {
+                display: none !important;
+                /* Remove '진행' label as requested */
+            }
+
+            .col-actions {
+                display: flex !important;
+                justify-content: flex-end !important;
+                gap: 8px;
+            }
+
+            .btn-edit,
+            .btn-delete,
+            .btn-complete {
+                flex: 1;
+                max-width: 80px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.85rem;
+                border-radius: 8px;
+            }
+        }
+
+        .btn-edit {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--gold);
         }
     </style>
 </head>
@@ -616,6 +654,8 @@
                     { id: 101, date: '26-01-10', content: '공장 바닥 보수 작업', manager: '총무팀', target: '26-01-20', overdue: 0, completedDate: '26-01-18' }
                 ];
             });
+
+            const [editingId, setEditingId] = useState(null);
 
             // Persist to localStorage whenever states change
             useEffect(() => {
@@ -646,19 +686,31 @@
             };
 
             const addTask = () => {
-                const today = new Date();
-                const dateStr = today.toISOString().slice(2, 10).replace(/-/g, '-');
+                if (editingId) {
+                    setTasks(tasks.map(t => t.id === editingId ? { ...t, content: newInput.content, manager: newInput.manager, target: newInput.target } : t));
+                    setEditingId(null);
+                } else {
+                    const today = new Date();
+                    const dateStr = today.toISOString().slice(2, 10).replace(/-/g, '-');
 
-                const newTask = {
-                    id: Date.now(),
-                    date: dateStr,
-                    content: newInput.content || '새로운 지시사항',
-                    manager: newInput.manager || '담당자',
-                    target: newInput.target || dateStr,
-                    overdue: 0
-                };
-                setTasks([...tasks, newTask]);
+                    const newTask = {
+                        id: Date.now(),
+                        date: dateStr,
+                        content: newInput.content || '새로운 지시사항',
+                        manager: newInput.manager || '담당자',
+                        target: newInput.target || dateStr,
+                        overdue: 0
+                    };
+                    setTasks([...tasks, newTask]);
+                }
                 setNewInput({ content: '', manager: '', target: '' });
+            };
+
+            const editTask = (id) => {
+                const task = tasks.find(t => t.id === id);
+                setNewInput({ content: task.content, manager: task.manager, target: task.target });
+                setEditingId(id);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             };
 
             const completeTask = (id) => {
@@ -684,7 +736,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.6</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.7</span></h1>
                         <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
 
@@ -738,10 +790,10 @@
                                     <td data-label="초과일">-</td>
                                     <td className="btn-add-cell">
                                         <button
-                                            style={{ background: 'none', border: 'none', fontWeight: 900, cursor: 'pointer', width: '100%', color: 'inherit' }}
+                                            style={{ background: 'none', border: 'none', fontWeight: 900, cursor: 'pointer', width: '100%', color: editingId ? 'var(--gold)' : 'inherit' }}
                                             onClick={addTask}
                                         >
-                                            추가
+                                            {editingId ? '수정 반영' : '추가'}
                                         </button>
                                     </td>
                                 </tr>
@@ -752,7 +804,8 @@
                                         <td className="col-manager" data-label="담당">{task.manager}</td>
                                         <td className="col-target" data-label="목표일">{task.target}</td>
                                         <td className={task.overdue > 0 ? 'overdue-red' : ''} data-label="초과일">{task.overdue} 일</td>
-                                        <td data-label="진행">
+                                        <td className="col-actions">
+                                            <button className="btn-edit" style={{ background: 'none', border: '1px solid var(--glass-border)', color: 'white' }} onClick={() => editTask(task.id)}>수정</button>
                                             <button className="btn-delete" onClick={() => deleteTask(task.id)}>삭제</button>
                                             <button className="btn-complete" onClick={() => completeTask(task.id)}>완료</button>
                                         </td>
