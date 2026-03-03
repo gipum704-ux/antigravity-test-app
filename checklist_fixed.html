@@ -35,7 +35,9 @@
             font-family: 'Noto Sans KR', sans-serif;
             min-height: 100vh;
             display: flex;
-            padding: 40px 10px;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
             overflow-x: hidden;
         }
 
@@ -385,6 +387,15 @@
 
         /* Mobile Responsive Styles */
         @media screen and (max-width: 768px) {
+            body {
+                padding: 15px 5px !important;
+            }
+
+            .app-container {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
             header {
                 display: flex !important;
                 flex-direction: column !important;
