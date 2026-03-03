@@ -513,6 +513,11 @@
                 font-size: 0.85rem;
                 color: rgba(255, 255, 255, 0.4);
                 font-weight: 400;
+                white-space: nowrap;
+                /* Prevent character stacking */
+                flex-shrink: 0;
+                /* Don't let the label squash */
+                margin-right: 15px;
             }
 
             td.col-task::before {
@@ -562,15 +567,23 @@
                 height: 50px;
             }
 
-            /* Fix Team Dropdown Overlap */
-            .col-manager {
+            /* Fix Team Dropdown & Input Overlap */
+            .col-manager,
+            .col-target {
                 justify-content: space-between !important;
             }
 
-            .team-select {
-                width: 140px !important;
+            .team-select,
+            tr.input-row input {
+                width: auto !important;
+                min-width: 150px;
+                flex-grow: 1;
+                max-width: 200px;
                 margin-left: auto;
-                text-align: right;
+                text-align: right !important;
+            }
+
+            .team-select {
                 padding-right: 25px !important;
                 /* For the arrow space */
             }
@@ -646,7 +659,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.2</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.3</span></h1>
                         <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
 
