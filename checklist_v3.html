@@ -601,15 +601,30 @@
         const { useState, useEffect } = React;
 
         const App = () => {
-            const [tasks, setTasks] = useState([
-                { id: 1, date: '26-03-02', content: '라인 자동화 설비 도입 검토', manager: '설비팀', target: '26-03-15', overdue: 0 },
-                { id: 2, date: '26-02-28', content: '부품 리드타임 단축 방안 수립', manager: '구매팀', target: '26-03-10', overdue: 2 }
-            ]);
+            // Load initial states from localStorage
+            const [tasks, setTasks] = useState(() => {
+                const saved = localStorage.getItem('executive_tasks');
+                return saved ? JSON.parse(saved) : [
+                    { id: 1, date: '26-03-02', content: '라인 자동화 설비 도입 검토', manager: '설비팀', target: '26-03-15', overdue: 0 },
+                    { id: 2, date: '26-02-28', content: '부품 리드타임 단축 방안 수립', manager: '구매팀', target: '26-03-10', overdue: 2 }
+                ];
+            });
 
+            const [completedTasks, setCompletedTasks] = useState(() => {
+                const saved = localStorage.getItem('executive_completed_tasks');
+                return saved ? JSON.parse(saved) : [
+                    { id: 101, date: '26-01-10', content: '공장 바닥 보수 작업', manager: '총무팀', target: '26-01-20', overdue: 0, completedDate: '26-01-18' }
+                ];
+            });
 
-            const [completedTasks, setCompletedTasks] = useState([
-                { id: 101, date: '26-01-10', content: '공장 바닥 보수 작업', manager: '총무팀', target: '26-01-20', overdue: 0, completedDate: '26-01-18' }
-            ]);
+            // Persist to localStorage whenever states change
+            useEffect(() => {
+                localStorage.setItem('executive_tasks', JSON.stringify(tasks));
+            }, [tasks]);
+
+            useEffect(() => {
+                localStorage.setItem('executive_completed_tasks', JSON.stringify(completedTasks));
+            }, [completedTasks]);
 
 
             const [showHistory, setShowHistory] = useState(false);
@@ -669,7 +684,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.5</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.6</span></h1>
                         <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
 
