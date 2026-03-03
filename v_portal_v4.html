@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제조본부 공유방 v4.1</title>
+
+    <!-- KakaoTalk & Social Sharing (Open Graph) -->
+    <meta property="og:title" content="제조본부 공유방">
+    <meta property="og:description" content="생산·품질 혁신 및 제조본부 통합 포털">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gipum704-ux.github.io/antigravity-test-app/v_portal_v4.html">
+    <meta property="og:image" content="https://gipum704-ux.github.io/antigravity-test-app/v.png">
+
+    <!-- Home Screen Icon (PWA) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="v.png">
+    <link rel="icon" type="image/png" href="v.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- React & Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        :root {
+            --onyx: #0c0c0c;
+            --charcoal: #1a1a1a;
+            --gold: #d4af37;
+            --gold-light: #ffebaa;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--onyx);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        @media (max-width: 600px) {
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .app-card {
+            background: var(--charcoal);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 2.5rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: block;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .app-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .app-card h2 {
+            font-size: 1.25rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: var(--gold);
+        }
+
+        .admin-section {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-admin-login {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        .btn-admin-login:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .admin-status {
+            color: var(--gold);
+            font-size: 0.9rem;
+            border: 1px solid var(--gold);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('executive_admin') === 'true');
+            const showAdminButton = new URLSearchParams(window.location.search).get('admin') === '1' ||
+                new URLSearchParams(window.location.search).get('debug') === 'admin';
+
+            const handleLogin = (response) => {
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                if (payload.email === 'gipum704@gmail.com') {
+                    setIsAdmin(true);
+                    localStorage.setItem('executive_admin', 'true');
+                    alert('관리자 인증되었습니다.');
+                } else {
+                    alert('관리자 권한이 없는 계정입니다.');
+                }
+            };
+
+            useEffect(() => {
+                if (window.google) {
+                    google.accounts.id.initialize({
+                        client_id: '108149202052-ndm688863f6r0dcp47p2f4q33306r8f5.apps.googleusercontent.com',
+                        callback: handleLogin
+                    });
+                }
+            }, []);
+
+            const triggerLogin = () => {
+                google.accounts.id.prompt();
+            };
+
+            return (
+                <div className="container">
+                    <h1>제조본부 공유방</h1>
+                    <div className="apps-grid">
+                        <a href="checklist_v3.html" className="app-card">
+                            <div className="app-icon">📋</div>
+                            <h2>제조본부장 지시사항</h2>
+                        </a>
+                        <a href="quote_app.html" className="app-card">
+                            <div className="app-icon">✨</div>
+                            <h2>명언 제조기</h2>
+                        </a>
+                    </div>
+
+                    {showAdminButton && (
+                        <div className="admin-section">
+                            {isAdmin ? (
+                                <div className="admin-status">관리자 인증됨 (v4.1)</div>
+                            ) : (
+                                <button className="btn-admin-login" onClick={triggerLogin}>관리자 로그인</button>
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
