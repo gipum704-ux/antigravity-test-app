@@ -561,6 +561,19 @@
                 margin-top: 10px !important;
                 height: 50px;
             }
+
+            /* Fix Team Dropdown Overlap */
+            .col-manager {
+                justify-content: space-between !important;
+            }
+
+            .team-select {
+                width: 140px !important;
+                margin-left: auto;
+                text-align: right;
+                padding-right: 25px !important;
+                /* For the arrow space */
+            }
         }
     </style>
 </head>
@@ -633,7 +646,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.1</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.2</span></h1>
                         <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
 
