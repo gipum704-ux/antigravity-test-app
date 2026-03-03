@@ -652,6 +652,16 @@
 
             const [editingId, setEditingId] = useState(null);
 
+            // One-time cleanup of specific sample data (IDs: 1, 2, 101)
+            useEffect(() => {
+                const cleanupDone = localStorage.getItem('cleanup_v3.0_done');
+                if (!cleanupDone) {
+                    setTasks(prev => prev.filter(t => t.id !== 1 && t.id !== 2));
+                    setCompletedTasks(prev => prev.filter(t => t.id !== 101));
+                    localStorage.setItem('cleanup_v3.0_done', 'true');
+                }
+            }, []);
+
             // Persist to localStorage whenever states change
             useEffect(() => {
                 localStorage.setItem('executive_tasks', JSON.stringify(tasks));
@@ -735,7 +745,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.9</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v3.0</span></h1>
                         <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
 
