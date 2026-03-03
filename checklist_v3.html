@@ -642,17 +642,12 @@
             // Load initial states from localStorage
             const [tasks, setTasks] = useState(() => {
                 const saved = localStorage.getItem('executive_tasks');
-                return saved ? JSON.parse(saved) : [
-                    { id: 1, date: '26-03-02', content: '라인 자동화 설비 도입 검토', manager: '설비팀', target: '26-03-15', overdue: 0 },
-                    { id: 2, date: '26-02-28', content: '부품 리드타임 단축 방안 수립', manager: '구매팀', target: '26-03-10', overdue: 2 }
-                ];
+                return saved ? JSON.parse(saved) : [];
             });
 
             const [completedTasks, setCompletedTasks] = useState(() => {
                 const saved = localStorage.getItem('executive_completed_tasks');
-                return saved ? JSON.parse(saved) : [
-                    { id: 101, date: '26-01-10', content: '공장 바닥 보수 작업', manager: '총무팀', target: '26-01-20', overdue: 0, completedDate: '26-01-18' }
-                ];
+                return saved ? JSON.parse(saved) : [];
             });
 
             const [editingId, setEditingId] = useState(null);
@@ -668,8 +663,12 @@
 
 
             const [showHistory, setShowHistory] = useState(false);
-            const [startDate, setStartDate] = useState('26-01-01');
-            const [endDate, setEndDate] = useState('26-12-31');
+            const [startDate, setStartDate] = useState(() => {
+                const d = new Date();
+                d.setMonth(d.getMonth() - 6);
+                return d.toISOString().slice(2, 10);
+            });
+            const [endDate, setEndDate] = useState(() => new Date().toISOString().slice(2, 10));
 
 
             const [newInput, setNewInput] = useState({
@@ -736,7 +735,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.8</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.9</span></h1>
                         <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
 
