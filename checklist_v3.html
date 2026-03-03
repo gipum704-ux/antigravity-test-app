@@ -501,7 +501,8 @@
 
             td.col-task {
                 display: block !important;
-                font-size: 1.1rem !important;
+                font-size: 1rem !important;
+                /* Reduced to match manager name */
                 font-weight: 700;
                 margin-bottom: 12px;
                 border-bottom: 1px solid var(--glass-border) !important;
@@ -620,6 +621,13 @@
                 target: ''
             });
 
+            const formatDateInput = (value) => {
+                const digits = value.replace(/\D/g, '');
+                if (digits.length <= 2) return digits;
+                if (digits.length <= 4) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+                return `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4, 6)}`;
+            };
+
             const addTask = () => {
                 const today = new Date();
                 const dateStr = today.toISOString().slice(2, 10).replace(/-/g, '-');
@@ -659,7 +667,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.3</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.4</span></h1>
                         <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
 
@@ -689,13 +697,13 @@
                                             onChange={e => setNewInput({ ...newInput, content: e.target.value })}
                                         />
                                     </td>
-                                    <td className="col-manager" data-label="담당 팀">
+                                    <td className="col-manager" data-label="담당">
                                         <select
                                             className="team-select"
                                             value={newInput.manager}
                                             onChange={e => setNewInput({ ...newInput, manager: e.target.value })}
                                         >
-                                            <option value="">담당 팀 선택</option>
+                                            <option value="">담당 선택</option>
                                             <option value="생산기술팀">생산기술팀</option>
                                             <option value="제조기획팀">제조기획팀</option>
                                             <option value="IT운영팀">IT운영팀</option>
@@ -706,7 +714,7 @@
                                         <input
                                             placeholder="26-00-00"
                                             value={newInput.target}
-                                            onChange={e => setNewInput({ ...newInput, target: e.target.value })}
+                                            onChange={e => setNewInput({ ...newInput, target: formatDateInput(e.target.value) })}
                                         />
 
                                     </td>
