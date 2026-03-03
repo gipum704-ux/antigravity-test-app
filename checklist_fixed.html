@@ -150,11 +150,13 @@
 
             /* Action button styling in card */
             td:last-child {
+                display: flex !important;
                 margin-top: 10px;
                 border-top: 1px solid var(--glass-border) !important;
                 padding-top: 10px !important;
                 justify-content: flex-end;
             }
+
 
             .btn-complete,
             .btn-delete {
@@ -630,12 +632,13 @@
                                         <td className="col-manager" data-label="담당">{task.manager}</td>
                                         <td className="col-target" data-label="목표일">{task.target}</td>
                                         <td className={task.overdue > 0 ? 'overdue-red' : ''} data-label="초과일">{task.overdue} 일</td>
-                                        <td>
+                                        <td data-label="진행">
                                             <button className="btn-delete" onClick={() => deleteTask(task.id)}>삭제</button>
                                             <button className="btn-complete" onClick={() => completeTask(task.id)}>완료</button>
                                         </td>
                                     </tr>
                                 ))}
+
 
                             </tbody>
                         </table>
