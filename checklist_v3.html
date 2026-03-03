@@ -736,7 +736,7 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.7</span></h1>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v2.8</span></h1>
                         <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
                     </header>
 
@@ -825,12 +825,14 @@
                                     <button className="btn-close" onClick={() => setShowHistory(false)}>&times;</button>
                                 </div>
 
-                                <div className="filter-group">
-                                    <span>기간 조회: </span>
-                                    <input type="text" value={startDate} onChange={e => setStartDate(e.target.value)} placeholder="MM-DD" />
-                                    <span> ~ </span>
-                                    <input type="text" value={endDate} onChange={e => setEndDate(e.target.value)} placeholder="MM-DD" />
-                                    <div className="modal-count">{padCount(filteredHistory.length)} 건</div>
+                                <div className="filter-group" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                                    <span style={{ whiteSpace: 'nowrap' }}>기간 조회: </span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexGrow: 1 }}>
+                                        <input type="text" value={startDate} onChange={e => setStartDate(formatDateInput(e.target.value))} placeholder="26-00-00" style={{ flex: 1, minWidth: '80px' }} />
+                                        <span>~</span>
+                                        <input type="text" value={endDate} onChange={e => setEndDate(formatDateInput(e.target.value))} placeholder="26-00-00" style={{ flex: 1, minWidth: '80px' }} />
+                                    </div>
+                                    <div className="modal-count" style={{ marginLeft: 'auto' }}>{padCount(filteredHistory.length)} 건</div>
                                 </div>
 
                                 <table>
