@@ -4,14 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제조본부장 지시사항 - Manufacturing Head Checklist</title>
+    <title>제조본부장 지시사항 v4.0</title>
     <!-- React & Babel CDN -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <!-- Google Fonts: Inter & Noto Sans KR -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+KR:wght@400;700;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+KR:400;700;900&display=swap"
         rel="stylesheet">
     <style>
         :root {
@@ -432,14 +433,24 @@
                 position: static !important;
             }
 
-            .btn-history-open {
+            .btn-history-open,
+            .btn-admin-login {
                 position: static !important;
                 transform: none !important;
-                width: 100% !important;
-                max-width: 250px !important;
-                margin: 0 auto !important;
-                padding: 12px 20px !important;
-                display: block !important;
+                width: 48% !important;
+                max-width: none !important;
+                margin: 0 !important;
+                padding: 12px 10px !important;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .header-buttons {
+                display: flex;
+                width: 100%;
+                gap: 4%;
+                margin-top: 15px;
             }
 
             .count-box {
@@ -680,6 +691,30 @@
             });
             const [endDate, setEndDate] = useState(() => new Date().toISOString().slice(2, 10));
 
+            // Admin Logic
+            const [user, setUser] = useState(null);
+            const isAdmin = user?.email === 'gipum704@gmail.com' || new URLSearchParams(window.location.search).get('debug') === 'admin';
+            const showAdminButton = new URLSearchParams(window.location.search).get('admin') === '1';
+
+            const handleLogin = (response) => {
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                setUser(payload);
+                console.log("Logged in as:", payload.email);
+            };
+
+            useEffect(() => {
+                if (window.google) {
+                    google.accounts.id.initialize({
+                        client_id: '108149202052-ndm688863f6r0dcp47p2f4q33306r8f5.apps.googleusercontent.com', // Placeholder - User needs to update this
+                        callback: handleLogin
+                    });
+                }
+            }, []);
+
+            const triggerLogin = () => {
+                google.accounts.id.prompt();
+            };
+
 
             const [newInput, setNewInput] = useState({
                 content: '',
@@ -745,8 +780,16 @@
             return (
                 <div className="app-container">
                     <header>
-                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v3.0</span></h1>
-                        <button className="btn-history-open" onClick={() => setShowHistory(true)}>완료 조회</button>
+                        <h1>제조본부장 지시사항 <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>v4.0</span></h1>
+                        <div className="header-buttons" style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+                            <button className="btn-history-open" onClick={() => setShowHistory(true)} style={{ position: 'static', transform: 'none', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: 'var(--gold)', padding: '10px 20px', borderRadius: '8px' }}>완료 조회</button>
+                            {showAdminButton && !isAdmin && (
+                                <button className="btn-admin-login" onClick={triggerLogin} style={{ background: 'none', border: '1px solid white', color: 'white', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer' }}>관리자 로그인</button>
+                            )}
+                            {isAdmin && (
+                                <div style={{ border: '1px solid var(--gold)', color: 'var(--gold)', padding: '10px 20px', borderRadius: '8px', fontSize: '0.9rem' }}>관리자 인증됨</div>
+                            )}
+                        </div>
                     </header>
 
                     <div className="count-box">{padCount(tasks.length)} 건</div>
@@ -766,46 +809,48 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="input-row">
-                                    <td className="col-date">자동입력</td>
-                                    <td className="col-task">
-                                        <input
-                                            placeholder="지시 사항 입력..."
-                                            value={newInput.content}
-                                            onChange={e => setNewInput({ ...newInput, content: e.target.value })}
-                                        />
-                                    </td>
-                                    <td className="col-manager" data-label="담당">
-                                        <select
-                                            className="team-select"
-                                            value={newInput.manager}
-                                            onChange={e => setNewInput({ ...newInput, manager: e.target.value })}
-                                        >
-                                            <option value="">담당 선택</option>
-                                            <option value="생산기술팀">생산기술팀</option>
-                                            <option value="제조기획팀">제조기획팀</option>
-                                            <option value="IT운영팀">IT운영팀</option>
-                                            <option value="디지털혁신팀">디지털혁신팀</option>
-                                        </select>
-                                    </td>
-                                    <td className="col-target" data-label="목표일">
-                                        <input
-                                            placeholder="26-00-00"
-                                            value={newInput.target}
-                                            onChange={e => setNewInput({ ...newInput, target: formatDateInput(e.target.value) })}
-                                        />
+                                {isAdmin && (
+                                    <tr className="input-row">
+                                        <td className="col-date">자동입력</td>
+                                        <td className="col-task">
+                                            <input
+                                                placeholder="지시 사항 입력..."
+                                                value={newInput.content}
+                                                onChange={e => setNewInput({ ...newInput, content: e.target.value })}
+                                            />
+                                        </td>
+                                        <td className="col-manager" data-label="담당">
+                                            <select
+                                                className="team-select"
+                                                value={newInput.manager}
+                                                onChange={e => setNewInput({ ...newInput, manager: e.target.value })}
+                                            >
+                                                <option value="">담당 선택</option>
+                                                <option value="생산기술팀">생산기술팀</option>
+                                                <option value="제조기획팀">제조기획팀</option>
+                                                <option value="IT운영팀">IT운영팀</option>
+                                                <option value="디지털혁신팀">디지털혁신팀</option>
+                                            </select>
+                                        </td>
+                                        <td className="col-target" data-label="목표일">
+                                            <input
+                                                placeholder="26-00-00"
+                                                value={newInput.target}
+                                                onChange={e => setNewInput({ ...newInput, target: formatDateInput(e.target.value) })}
+                                            />
 
-                                    </td>
-                                    <td data-label="초과일">-</td>
-                                    <td className="btn-add-cell">
-                                        <button
-                                            style={{ background: 'none', border: 'none', fontWeight: 900, cursor: 'pointer', width: '100%', color: editingId ? 'var(--gold)' : 'inherit' }}
-                                            onClick={addTask}
-                                        >
-                                            {editingId ? '수정 반영' : '추가'}
-                                        </button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td data-label="초과일">-</td>
+                                        <td className="btn-add-cell">
+                                            <button
+                                                style={{ background: 'none', border: 'none', fontWeight: 900, cursor: 'pointer', width: '100%', color: editingId ? 'var(--gold)' : 'inherit' }}
+                                                onClick={addTask}
+                                            >
+                                                {editingId ? '수정 반영' : '추가'}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                )}
                                 {tasks.map(task => (
                                     <tr key={task.id}>
                                         <td className="col-date" data-label="지시일">{task.date}</td>
@@ -814,9 +859,15 @@
                                         <td className="col-target" data-label="목표일">{task.target}</td>
                                         <td className={task.overdue > 0 ? 'overdue-red' : ''} data-label="초과일">{task.overdue} 일</td>
                                         <td className="col-actions">
-                                            <button className="btn-edit" style={{ background: 'none', border: '1px solid var(--glass-border)', color: 'white' }} onClick={() => editTask(task.id)}>수정</button>
-                                            <button className="btn-delete" onClick={() => deleteTask(task.id)}>삭제</button>
-                                            <button className="btn-complete" onClick={() => completeTask(task.id)}>완료</button>
+                                            {isAdmin ? (
+                                                <React.Fragment>
+                                                    <button className="btn-edit" style={{ background: 'none', border: '1px solid var(--glass-border)', color: 'white' }} onClick={() => editTask(task.id)}>수정</button>
+                                                    <button className="btn-delete" onClick={() => deleteTask(task.id)}>삭제</button>
+                                                    <button className="btn-complete" onClick={() => completeTask(task.id)}>완료</button>
+                                                </React.Fragment>
+                                            ) : (
+                                                <div style={{ color: '#999', fontSize: '0.8rem', fontStyle: 'italic' }}>조회 전용</div>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
